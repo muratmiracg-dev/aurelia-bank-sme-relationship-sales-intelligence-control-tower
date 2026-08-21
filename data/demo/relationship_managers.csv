@@ -1,0 +1,49 @@
+rm_id,rm_label,region,seniority,monthly_contact_capacity,annual_target_try,data_class
+RM001,Relationship Manager 001,Mediterranean,Manager,49,12652277,CONTROLLED_SYNTHETIC
+RM002,Relationship Manager 002,Marmara,Manager,57,12639100,CONTROLLED_SYNTHETIC
+RM003,Relationship Manager 003,Black Sea,Associate,52,13978226,CONTROLLED_SYNTHETIC
+RM004,Relationship Manager 004,Central Anatolia,Associate,59,14098189,CONTROLLED_SYNTHETIC
+RM005,Relationship Manager 005,Eastern,Associate,59,8035586,CONTROLLED_SYNTHETIC
+RM006,Relationship Manager 006,Aegean,Senior Manager,63,13782325,CONTROLLED_SYNTHETIC
+RM007,Relationship Manager 007,Central Anatolia,Manager,57,8024179,CONTROLLED_SYNTHETIC
+RM008,Relationship Manager 008,Marmara,Associate,69,13153766,CONTROLLED_SYNTHETIC
+RM009,Relationship Manager 009,Marmara,Manager,69,9079151,CONTROLLED_SYNTHETIC
+RM010,Relationship Manager 010,Central Anatolia,Manager,58,8738008,CONTROLLED_SYNTHETIC
+RM011,Relationship Manager 011,Black Sea,Manager,62,14170123,CONTROLLED_SYNTHETIC
+RM012,Relationship Manager 012,Central Anatolia,Manager,50,12547627,CONTROLLED_SYNTHETIC
+RM013,Relationship Manager 013,Black Sea,Senior Manager,70,10599786,CONTROLLED_SYNTHETIC
+RM014,Relationship Manager 014,Eastern,Manager,69,13837091,CONTROLLED_SYNTHETIC
+RM015,Relationship Manager 015,Marmara,Senior Manager,66,10152907,CONTROLLED_SYNTHETIC
+RM016,Relationship Manager 016,Mediterranean,Associate,51,13989976,CONTROLLED_SYNTHETIC
+RM017,Relationship Manager 017,Aegean,Senior Manager,60,13388197,CONTROLLED_SYNTHETIC
+RM018,Relationship Manager 018,Mediterranean,Manager,57,11407436,CONTROLLED_SYNTHETIC
+RM019,Relationship Manager 019,Aegean,Manager,70,14059176,CONTROLLED_SYNTHETIC
+RM020,Relationship Manager 020,Mediterranean,Associate,57,11406317,CONTROLLED_SYNTHETIC
+RM021,Relationship Manager 021,Marmara,Manager,48,12090311,CONTROLLED_SYNTHETIC
+RM022,Relationship Manager 022,Central Anatolia,Manager,46,10022793,CONTROLLED_SYNTHETIC
+RM023,Relationship Manager 023,Black Sea,Associate,52,12170768,CONTROLLED_SYNTHETIC
+RM024,Relationship Manager 024,Eastern,Manager,54,9761019,CONTROLLED_SYNTHETIC
+RM025,Relationship Manager 025,Black Sea,Senior Manager,55,8777781,CONTROLLED_SYNTHETIC
+RM026,Relationship Manager 026,Black Sea,Manager,60,9225955,CONTROLLED_SYNTHETIC
+RM027,Relationship Manager 027,Eastern,Senior Manager,60,12042091,CONTROLLED_SYNTHETIC
+RM028,Relationship Manager 028,Eastern,Manager,66,14663764,CONTROLLED_SYNTHETIC
+RM029,Relationship Manager 029,Marmara,Manager,56,11500428,CONTROLLED_SYNTHETIC
+RM030,Relationship Manager 030,Central Anatolia,Manager,46,8416654,CONTROLLED_SYNTHETIC
+RM031,Relationship Manager 031,Black Sea,Manager,55,10882137,CONTROLLED_SYNTHETIC
+RM032,Relationship Manager 032,Aegean,Associate,50,10228101,CONTROLLED_SYNTHETIC
+RM033,Relationship Manager 033,Mediterranean,Manager,59,12823257,CONTROLLED_SYNTHETIC
+RM034,Relationship Manager 034,Aegean,Manager,61,14165793,CONTROLLED_SYNTHETIC
+RM035,Relationship Manager 035,Central Anatolia,Manager,59,10889767,CONTROLLED_SYNTHETIC
+RM036,Relationship Manager 036,Marmara,Senior Manager,68,14398006,CONTROLLED_SYNTHETIC
+RM037,Relationship Manager 037,Aegean,Manager,47,12086612,CONTROLLED_SYNTHETIC
+RM038,Relationship Manager 038,Aegean,Associate,62,10569107,CONTROLLED_SYNTHETIC
+RM039,Relationship Manager 039,Eastern,Senior Manager,47,8561854,CONTROLLED_SYNTHETIC
+RM040,Relationship Manager 040,Black Sea,Manager,69,11841981,CONTROLLED_SYNTHETIC
+RM041,Relationship Manager 041,Marmara,Associate,55,11663414,CONTROLLED_SYNTHETIC
+RM042,Relationship Manager 042,Mediterranean,Senior Manager,49,8132264,CONTROLLED_SYNTHETIC
+RM043,Relationship Manager 043,Mediterranean,Senior Manager,52,14343799,CONTROLLED_SYNTHETIC
+RM044,Relationship Manager 044,Eastern,Senior Manager,50,11737648,CONTROLLED_SYNTHETIC
+RM045,Relationship Manager 045,Aegean,Manager,46,10947396,CONTROLLED_SYNTHETIC
+RM046,Relationship Manager 046,Mediterranean,Senior Manager,63,11936019,CONTROLLED_SYNTHETIC
+RM047,Relationship Manager 047,Central Anatolia,Manager,67,13534674,CONTROLLED_SYNTHETIC
+RM048,Relationship Manager 048,Eastern,Manager,64,14535537,CONTROLLED_SYNTHETIC

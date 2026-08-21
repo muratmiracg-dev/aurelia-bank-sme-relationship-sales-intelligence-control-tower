@@ -1,0 +1,11 @@
+control_id,control_name,actual_value,threshold,operator,status,owner,management_action,data_class
+CTL01,Champion ROC AUC,0.715271,0.700000,>=,PASS,Model Risk,Monitor,DERIVED_ANALYTICS
+CTL02,Champion top-decile lift,2.073040,1.350000,>=,PASS,Model Risk,Monitor,DERIVED_ANALYTICS
+CTL03,Champion Brier score,0.182008,0.220000,<=,PASS,Model Risk,Monitor,DERIVED_ANALYTICS
+CTL04,Maximum operational-segment selection gap,0.058939,0.120000,<=,PASS,Conduct Risk,Monitor,DERIVED_ANALYTICS
+CTL05,KYC overdue customer rate,0.380937,0.300000,<=,BREACH,KYC Operations,"Escalate, investigate and approve remediation",DERIVED_ANALYTICS
+CTL06,Suppressed candidates allocated to worklist,0.000000,0.000000,<=,PASS,Product Governance,Monitor,DERIVED_ANALYTICS
+CTL07,Automated sale decisions,0.000000,0.000000,<=,PASS,Product Governance,Monitor,DERIVED_ANALYTICS
+CTL08,Maximum RM capacity utilisation,0.607143,1.000000,<=,PASS,Sales Operations,Monitor,DERIVED_ANALYTICS
+CTL09,Selected conversations with negative expected profit,0.000000,0.000000,<=,PASS,Finance,Monitor,DERIVED_ANALYTICS
+CTL10,Selected conversations without contact permission,0.000000,0.000000,<=,PASS,Privacy Office,Monitor,DERIVED_ANALYTICS

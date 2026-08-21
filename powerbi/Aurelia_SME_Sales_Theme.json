@@ -1,0 +1,22 @@
+{
+  "name": "Aurelia Bank SME Relationship Sales",
+  "dataColors": ["#0E7490", "#32B7C7", "#0B1F33", "#15803D", "#D97706", "#C2413B", "#64748B"],
+  "background": "#F4F7FA",
+  "foreground": "#172033",
+  "tableAccent": "#0E7490",
+  "good": "#15803D",
+  "neutral": "#D97706",
+  "bad": "#C2413B",
+  "maximum": "#0E7490",
+  "center": "#32B7C7",
+  "minimum": "#E2E8F0",
+  "visualStyles": {
+    "*": {
+      "*": {
+        "title": [{"show": true, "fontColor": {"solid": {"color": "#0B1F33"}}, "fontSize": 12, "fontFamily": "Segoe UI Semibold"}],
+        "background": [{"show": true, "color": {"solid": {"color": "#FFFFFF"}}, "transparency": 0}],
+        "border": [{"show": true, "color": {"solid": {"color": "#D7E0E8"}}, "radius": 4}]
+      }
+    }
+  }
+}

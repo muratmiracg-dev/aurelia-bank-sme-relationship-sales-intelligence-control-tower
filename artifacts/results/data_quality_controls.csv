@@ -1,0 +1,15 @@
+control_id,control_name,status,owner,remediation,data_class
+DQ01,Customer identifiers are unique,PASS,Data Office,None,DERIVED_ANALYTICS
+DQ02,Relationship-manager identifiers are unique,PASS,Sales Operations,None,DERIVED_ANALYTICS
+DQ03,Every customer has an assigned relationship manager,PASS,Sales Operations,None,DERIVED_ANALYTICS
+DQ04,Every risk profile resolves to one customer,PASS,Credit Risk,None,DERIVED_ANALYTICS
+DQ05,Monthly-flow amounts are non-negative,PASS,Data Office,None,DERIVED_ANALYTICS
+DQ06,Every holding uses a governed product code,PASS,Product Governance,None,DERIVED_ANALYTICS
+DQ07,Historical campaign labels are binary,PASS,Model Development,None,DERIVED_ANALYTICS
+DQ08,Historical treatment assignment is binary,PASS,Model Development,None,DERIVED_ANALYTICS
+DQ09,Customer 360 has exactly one row per customer,PASS,Data Office,None,DERIVED_ANALYTICS
+DQ10,Candidate identifiers are unique,PASS,Analytics,None,DERIVED_ANALYTICS
+DQ11,Candidate need signals are bounded,PASS,Analytics,None,DERIVED_ANALYTICS
+DQ12,No existing product is proposed as a candidate,PASS,Product Governance,None,DERIVED_ANALYTICS
+DQ13,PD values are bounded,PASS,Credit Risk,None,DERIVED_ANALYTICS
+DQ14,Six-month flow coverage is complete,PASS,Data Office,None,DERIVED_ANALYTICS

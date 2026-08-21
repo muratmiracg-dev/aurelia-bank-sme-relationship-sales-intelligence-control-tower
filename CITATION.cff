@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use this portfolio project, please cite it as follows."
+title: "Aurelia Bank SME Relationship & Sales Intelligence Control Tower"
+type: software
+authors:
+  - family-names: Gedik
+    given-names: Murat Miraç
+version: 1.0.0
+date-released: 2026-08-21
+license: MIT
+repository-code: "https://github.com/muratmiracg-dev/aurelia-bank-sme-relationship-sales-intelligence-control-tower"

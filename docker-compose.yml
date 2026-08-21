@@ -1,0 +1,12 @@
+services:
+  api:
+    build: .
+    environment:
+      AURELIA_SME_SALES_ROOT: /app
+    ports:
+      - "8000:8000"
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true

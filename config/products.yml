@@ -1,0 +1,41 @@
+products:
+  WORKING_CAPITAL_LOAN:
+    label: Working Capital Loan
+    conversation: Review seasonal funding needs and cash-conversion cycle.
+    human_review: true
+    credit_product: true
+  POS_MERCHANT_ACQUIRING:
+    label: POS & Merchant Acquiring
+    conversation: Discuss merchant collections, settlement speed and acquiring economics.
+    human_review: false
+    credit_product: false
+  BUSINESS_CREDIT_CARD:
+    label: Business Credit Card
+    conversation: Review employee spending controls and short-term purchasing needs.
+    human_review: true
+    credit_product: true
+  PAYROLL_SERVICES:
+    label: Payroll Services
+    conversation: Discuss payroll automation and employee banking needs.
+    human_review: false
+    credit_product: false
+  CASH_MANAGEMENT:
+    label: Cash Management
+    conversation: Review collections, payments and liquidity visibility.
+    human_review: false
+    credit_product: false
+  TRADE_FINANCE:
+    label: Trade Finance
+    conversation: Discuss import/export flows, guarantees and documentary products.
+    human_review: true
+    credit_product: true
+  TERM_DEPOSIT:
+    label: Term Deposit
+    conversation: Review surplus liquidity horizon and deposit alternatives.
+    human_review: false
+    credit_product: false
+  FX_RISK_MANAGEMENT:
+    label: FX Risk Management
+    conversation: Review documented FX exposure and risk-management objectives.
+    human_review: true
+    credit_product: false

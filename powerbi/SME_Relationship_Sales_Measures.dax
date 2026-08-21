@@ -1,0 +1,124 @@
+// Aurelia Bank SME Relationship & Sales Intelligence - reusable measure library
+
+SME Customers =
+DISTINCTCOUNT ( customer_360[customer_id] )
+
+Relationship Managers =
+DISTINCTCOUNT ( relationship_managers[rm_id] )
+
+Products Held =
+SUM ( customer_360[products_held] )
+
+Average Products per Customer =
+DIVIDE ( [Products Held], [SME Customers] )
+
+Average Relationship Depth =
+AVERAGE ( customer_360[relationship_depth_score] )
+
+Average Wallet Share Proxy =
+AVERAGE ( customer_360[wallet_share_proxy] )
+
+Candidate Opportunities =
+COUNTROWS ( product_opportunities )
+
+Eligible Opportunities =
+CALCULATE ( [Candidate Opportunities], product_opportunities[eligible_flag] = TRUE () )
+
+Policy Qualified Opportunities =
+CALCULATE ( [Candidate Opportunities], product_opportunities[policy_threshold_pass] = TRUE () )
+
+Eligibility Rate =
+DIVIDE ( [Eligible Opportunities], [Candidate Opportunities] )
+
+Policy Qualification Rate =
+DIVIDE ( [Policy Qualified Opportunities], [Candidate Opportunities] )
+
+Prioritised Conversations =
+CALCULATE (
+    COUNTROWS ( next_best_conversations ),
+    next_best_conversations[capacity_allocated_flag] = TRUE ()
+)
+
+High Priority Conversations =
+CALCULATE (
+    [Prioritised Conversations],
+    next_best_conversations[recommendation_status] = "HIGH_PRIORITY"
+)
+
+Capacity Waitlist =
+CALCULATE (
+    COUNTROWS ( next_best_conversations ),
+    next_best_conversations[work_status] = "CAPACITY_WAITLIST"
+)
+
+Expected Incremental Profit TRY =
+CALCULATE (
+    SUM ( next_best_conversations[expected_incremental_profit_try] ),
+    next_best_conversations[capacity_allocated_flag] = TRUE ()
+)
+
+Expected Profit per Conversation TRY =
+DIVIDE ( [Expected Incremental Profit TRY], [Prioritised Conversations] )
+
+Weighted Activation Probability =
+CALCULATE (
+    AVERAGE ( next_best_conversations[propensity_probability] ),
+    next_best_conversations[capacity_allocated_flag] = TRUE ()
+)
+
+Average Contact Uplift =
+CALCULATE (
+    AVERAGE ( next_best_conversations[predicted_contact_uplift] ),
+    next_best_conversations[capacity_allocated_flag] = TRUE ()
+)
+
+Average Opportunity Score =
+CALCULATE (
+    AVERAGE ( next_best_conversations[opportunity_score] ),
+    next_best_conversations[capacity_allocated_flag] = TRUE ()
+)
+
+KYC Overdue Customers =
+CALCULATE ( [SME Customers], customer_360[kyc_overdue_days] > 0 )
+
+KYC Overdue Rate =
+DIVIDE ( [KYC Overdue Customers], [SME Customers] )
+
+Suppressed Opportunities =
+CALCULATE ( [Candidate Opportunities], product_opportunities[eligible_flag] = FALSE () )
+
+Suppression Rate =
+DIVIDE ( [Suppressed Opportunities], [Candidate Opportunities] )
+
+Automated Sale Decisions =
+CALCULATE (
+    COUNTROWS ( next_best_conversations ),
+    next_best_conversations[automated_sale_flag] = TRUE ()
+)
+
+RM Capacity Utilisation =
+DIVIDE (
+    SUM ( rm_performance[allocated_tasks] ),
+    SUM ( rm_performance[monthly_contact_capacity] )
+)
+
+Management Control Breaches =
+CALCULATE ( COUNTROWS ( management_controls ), management_controls[status] = "BREACH" )
+
+Data Quality Pass Rate =
+DIVIDE (
+    CALCULATE ( COUNTROWS ( data_quality_controls ), data_quality_controls[status] = "PASS" ),
+    COUNTROWS ( data_quality_controls )
+)
+
+Champion ROC AUC =
+CALCULATE ( MAX ( model_performance[roc_auc] ), model_performance[selected_champion] = TRUE () )
+
+Champion Brier Score =
+CALCULATE ( MAX ( model_performance[brier_score] ), model_performance[selected_champion] = TRUE () )
+
+Champion Top Decile Lift =
+CALCULATE (
+    MAX ( model_performance[top_decile_lift] ),
+    model_performance[selected_champion] = TRUE ()
+)

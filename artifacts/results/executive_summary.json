@@ -1,0 +1,59 @@
+{
+  "project": "Aurelia Bank SME Relationship & Sales Intelligence Control Tower",
+  "as_of_date": "2026-08-20",
+  "seed": 20260821,
+  "synthetic_customers": 3200,
+  "relationship_managers": 48,
+  "product_holdings": 7044,
+  "historical_campaigns": 16000,
+  "candidate_opportunities": 18556,
+  "eligible_candidates": 12250,
+  "policy_qualified_candidates": 1254,
+  "prioritised_conversations": 661,
+  "high_priority_conversations": 4,
+  "capacity_waitlist": 0,
+  "expected_incremental_profit_try": 16737794.97,
+  "weighted_activation_probability": 0.422331,
+  "kyc_overdue_rate": 0.380937,
+  "champion_model": "LOGISTIC_CHAMPION",
+  "champion_roc_auc": 0.715271,
+  "champion_pr_auc": 0.494523,
+  "champion_brier_score": 0.182008,
+  "champion_top_decile_lift": 2.07304,
+  "data_quality_passed": 14,
+  "data_quality_total": 14,
+  "management_control_breaches": 1,
+  "management_controls_total": 10,
+  "product_mix": {
+    "Cash Management": {
+      "conversations": 343,
+      "expected_profit_try": 11026997.49
+    },
+    "Payroll Services": {
+      "conversations": 129,
+      "expected_profit_try": 2881346.3
+    },
+    "POS & Merchant Acquiring": {
+      "conversations": 165,
+      "expected_profit_try": 2640004.47
+    },
+    "FX Risk Management": {
+      "conversations": 6,
+      "expected_profit_try": 113659.29
+    },
+    "Business Credit Card": {
+      "conversations": 16,
+      "expected_profit_try": 68729.09
+    },
+    "Term Deposit": {
+      "conversations": 1,
+      "expected_profit_try": 3842.29
+    },
+    "Working Capital Loan": {
+      "conversations": 1,
+      "expected_profit_try": 3216.04
+    }
+  },
+  "canonical_result_sha256": "61fb583b4488eaa3f07625303fa824037a8929bd8b69042d21536089bf4000c8",
+  "decision_boundary": "Human-led decision support only. No automated sale, credit approval, customer restriction or binding product recommendation."
+}

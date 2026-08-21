@@ -1,0 +1,6 @@
+funnel_stage,expected_count,stage_order,conversion_from_prior,data_class
+Prioritised conversations,661,1,1.000000,DERIVED_ANALYTICS
+Expected contacts,568,2,0.859304,DERIVED_ANALYTICS
+Expected qualified needs,383,3,0.674296,DERIVED_ANALYTICS
+Expected proposals,258,4,0.673629,DERIVED_ANALYTICS
+Expected activations,109,5,0.422481,DERIVED_ANALYTICS

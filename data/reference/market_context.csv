@@ -1,0 +1,6 @@
+reference_id,as_of_date,metric,value,unit,source_name,source_url,usage_boundary
+BDDK_JUN26_ASSETS,2026-06-30,Turkish banking sector total assets,52727562,TRY million,BDDK Basic Banking Data,https://www.bddk.org.tr/,Public sector context only
+BDDK_JUN26_EQUITY,2026-06-30,Turkish banking sector equity,4612495,TRY million,BDDK Basic Banking Data,https://www.bddk.org.tr/,Public sector context only
+BDDK_JUN26_DEPOSITS,2026-06-30,Turkish banking sector deposits,30109453,TRY million,BDDK Basic Banking Data,https://www.bddk.org.tr/,Public sector context only
+BDDK_JUN26_LOANS,2026-06-30,Turkish banking sector loans,26791320,TRY million,BDDK Basic Banking Data,https://www.bddk.org.tr/,Public sector context only
+TCMB_EVDS_CATALOG,2026-08-20,Loan deposit and FX series catalog,,n/a,TCMB EVDS,https://evds2.tcmb.gov.tr/index.php?/evds/userDocs=,Methodology and series discovery only
