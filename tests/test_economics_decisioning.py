@@ -5,7 +5,7 @@ import copy
 import pytest
 
 from aurelia_sme_sales.constants import PRODUCTS
-from aurelia_sme_sales.decisioning import _suppression_reasons
+from aurelia_sme_sales.decisioning import _suppression_reasons, build_opportunities
 from aurelia_sme_sales.economics import _notional
 
 
@@ -49,6 +49,22 @@ def test_decisioning_never_automates_sale(decision_pack):
     next_best = decisions["next_best_conversations"]
     assert not next_best["automated_sale_flag"].any()
     assert (next_best["final_decision_owner"] == "AUTHORISED_RELATIONSHIP_MANAGER").all()
+    assert decisions["rm_performance"]["capacity_utilisation"].le(1).all()
+
+
+def test_task_allocation_respects_policy_cap(economics_decision_inputs):
+    economics, relationship_managers, products, config = economics_decision_inputs
+    relationship_managers = relationship_managers.copy()
+    relationship_managers["monthly_contact_capacity"] = 999
+    config = copy.deepcopy(config)
+    config["assumptions"]["decision_policy"]["max_open_tasks_per_rm"] = 1
+
+    decisions = build_opportunities(economics, relationship_managers, products, config)
+    next_best = decisions["next_best_conversations"]
+    allocated = next_best.loc[next_best["capacity_allocated_flag"]]
+
+    assert next_best["effective_contact_capacity"].eq(1).all()
+    assert allocated.groupby("rm_id").size().le(1).all()
     assert decisions["rm_performance"]["capacity_utilisation"].le(1).all()
 
 

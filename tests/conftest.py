@@ -58,3 +58,12 @@ def decision_pack(small_data: dict, small_config: dict, feature_pack):
         small_config,
     )
     return economics, decisions
+
+
+@pytest.fixture(scope="session")
+def economics_decision_inputs(small_data: dict, small_config: dict, feature_pack):
+    _, candidates = feature_pack
+    bundle = fit_propensity_models(small_data["campaign_history"], seed=12)
+    scored = score_candidates(candidates, bundle)
+    economics = calculate_product_economics(scored, small_config)
+    return economics, small_data["relationship_managers"], small_config["products"], small_config

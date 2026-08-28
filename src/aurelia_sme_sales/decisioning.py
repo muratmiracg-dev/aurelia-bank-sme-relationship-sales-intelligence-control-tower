@@ -69,10 +69,22 @@ def build_opportunities(
     next_best["customer_rank_within_rm"] = next_best.groupby("rm_id")["opportunity_score"].rank(
         method="first", ascending=False
     )
-    capacity = relationship_managers[["rm_id", "monthly_contact_capacity"]]
+    managers_with_capacity = relationship_managers.copy()
+    managers_with_capacity["policy_max_open_tasks"] = int(policy["max_open_tasks_per_rm"])
+    managers_with_capacity["effective_contact_capacity"] = managers_with_capacity[
+        ["monthly_contact_capacity", "policy_max_open_tasks"]
+    ].min(axis=1)
+    capacity = managers_with_capacity[
+        [
+            "rm_id",
+            "monthly_contact_capacity",
+            "policy_max_open_tasks",
+            "effective_contact_capacity",
+        ]
+    ]
     next_best = next_best.merge(capacity, on="rm_id", validate="many_to_one")
     next_best["capacity_allocated_flag"] = (
-        next_best["customer_rank_within_rm"] <= next_best["monthly_contact_capacity"]
+        next_best["customer_rank_within_rm"] <= next_best["effective_contact_capacity"]
     )
     next_best["work_status"] = np.where(
         next_best["capacity_allocated_flag"], "CONTACT_DUE", "CAPACITY_WAITLIST"
@@ -84,7 +96,7 @@ def build_opportunities(
 
     rm_worklist = next_best.loc[next_best["capacity_allocated_flag"]].copy()
     rm_worklist = rm_worklist.sort_values(["rm_id", "opportunity_score"], ascending=[True, False])
-    rm_performance = _rm_performance(frame, rm_worklist, relationship_managers)
+    rm_performance = _rm_performance(frame, rm_worklist, managers_with_capacity)
     funnel = _sales_funnel(next_best)
     return {
         "product_opportunities": frame,
@@ -145,7 +157,9 @@ def _rm_performance(
         "average_opportunity_score",
     ]
     result[numeric] = result[numeric].fillna(0)
-    result["capacity_utilisation"] = result["allocated_tasks"] / result["monthly_contact_capacity"]
+    result["capacity_utilisation"] = (
+        result["allocated_tasks"] / result["effective_contact_capacity"]
+    )
     result["expected_target_coverage"] = (
         result["expected_incremental_profit_try"] / result["annual_target_try"]
     )
