@@ -26,6 +26,8 @@ def load_project_config(root: str | Path) -> dict[str, Any]:
         raise ConfigurationError("Opportunity score weights must sum to 1.0")
     if int(assumptions["synthetic_population"]["relationship_managers"]) < 1:
         raise ConfigurationError("At least one relationship manager is required")
+    if int(assumptions["decision_policy"]["max_open_tasks_per_rm"]) < 1:
+        raise ConfigurationError("max_open_tasks_per_rm must be at least 1")
     return {"assumptions": assumptions, "products": products["products"]}
 
 

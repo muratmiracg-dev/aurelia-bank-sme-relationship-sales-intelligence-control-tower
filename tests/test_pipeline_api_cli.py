@@ -38,12 +38,14 @@ def test_pipeline_writes_reproducible_pack(tmp_path, small_config, project_root)
     assert len(list((root / "artifacts/figures").glob("*.png"))) == 7
 
 
-def test_api_read_only_endpoints(project_root):
-    client = TestClient(create_app(project_root))
+def test_api_read_only_endpoints(tmp_path, small_config, project_root):
+    root = _prepare_root(tmp_path, small_config, project_root)
+    run_pipeline(root, seed=31)
+    client = TestClient(create_app(root))
     assert client.get("/health").status_code == 200
     summary = client.get("/api/v1/portfolio/summary")
     assert summary.status_code == 200
-    next_best_path = project_root / "artifacts/results/next_best_conversations.csv"
+    next_best_path = root / "artifacts/results/next_best_conversations.csv"
     import pandas as pd
 
     next_best = pd.read_csv(next_best_path)

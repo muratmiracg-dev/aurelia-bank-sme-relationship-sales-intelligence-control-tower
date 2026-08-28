@@ -44,6 +44,17 @@ def test_bad_product_order_raises(tmp_path, base_config):
         load_project_config(tmp_path)
 
 
+def test_non_positive_rm_task_cap_raises(tmp_path, base_config):
+    config_dir = tmp_path / "config"
+    config_dir.mkdir()
+    assumptions = copy.deepcopy(base_config["assumptions"])
+    assumptions["decision_policy"]["max_open_tasks_per_rm"] = 0
+    (config_dir / "assumptions.yml").write_text(yaml.safe_dump(assumptions))
+    (config_dir / "products.yml").write_text(yaml.safe_dump({"products": base_config["products"]}))
+    with pytest.raises(ConfigurationError, match="max_open_tasks_per_rm"):
+        load_project_config(tmp_path)
+
+
 def test_generator_is_deterministic(small_config):
     first = build_demo_data(small_config, seed=77)
     second = build_demo_data(small_config, seed=77)

@@ -91,5 +91,6 @@ stale financials for credit products or insufficient documented FX need.
 ## 10. Capacity allocation
 
 One policy-qualified conversation per customer is retained. Conversations are ranked inside the
-RM portfolio and allocated only up to the configured monthly capacity. The authorised RM owns the
+RM portfolio and allocated only up to the lower of the configured monthly capacity and the
+`max_open_tasks_per_rm` policy ceiling. The authorised RM owns the
 final decision and may record contradictory evidence or decline to contact.
