@@ -81,6 +81,10 @@ activation-state profit, less the contact cost.
 ```
 
 The weighted score cannot bypass policy thresholds or suppression rules.
+Configuration loading also fails closed unless all five scoring components are present,
+each weight is finite and non-negative, and the weights sum to exactly one (within numerical
+tolerance). This prevents malformed governance settings from silently inverting or corrupting
+customer prioritisation.
 
 ## 9. Governance gates
 

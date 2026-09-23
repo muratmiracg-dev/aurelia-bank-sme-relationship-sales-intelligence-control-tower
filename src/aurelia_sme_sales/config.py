@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 from pathlib import Path
 from typing import Any
 
@@ -22,7 +23,19 @@ def load_project_config(root: str | Path) -> dict[str, Any]:
     if set(products.get("products", {})) != set(PRODUCTS):
         raise ConfigurationError("products.yml must define every canonical product")
     weights = assumptions.get("score_weights", {})
-    if abs(sum(float(value) for value in weights.values()) - 1.0) > 1e-9:
+    expected_weights = {
+        "propensity",
+        "uplift",
+        "need",
+        "profitability",
+        "relationship_gap",
+    }
+    if set(weights) != expected_weights:
+        raise ConfigurationError("Opportunity score weights must define every scoring component")
+    numeric_weights = [float(value) for value in weights.values()]
+    if not all(math.isfinite(value) and value >= 0 for value in numeric_weights):
+        raise ConfigurationError("Opportunity score weights must be finite and non-negative")
+    if abs(sum(numeric_weights) - 1.0) > 1e-9:
         raise ConfigurationError("Opportunity score weights must sum to 1.0")
     if int(assumptions["synthetic_population"]["relationship_managers"]) < 1:
         raise ConfigurationError("At least one relationship manager is required")

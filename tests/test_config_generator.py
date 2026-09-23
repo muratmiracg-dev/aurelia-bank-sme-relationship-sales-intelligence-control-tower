@@ -33,6 +33,31 @@ def test_bad_weight_sum_raises(tmp_path, base_config):
         load_project_config(tmp_path)
 
 
+@pytest.mark.parametrize("invalid_weight", [-0.10, float("nan"), float("inf")])
+def test_invalid_score_weight_raises(tmp_path, base_config, invalid_weight):
+    config_dir = tmp_path / "config"
+    config_dir.mkdir()
+    assumptions = copy.deepcopy(base_config["assumptions"])
+    assumptions["score_weights"]["propensity"] = invalid_weight
+    (config_dir / "assumptions.yml").write_text(yaml.safe_dump(assumptions))
+    (config_dir / "products.yml").write_text(yaml.safe_dump({"products": base_config["products"]}))
+
+    with pytest.raises(ConfigurationError, match="finite and non-negative"):
+        load_project_config(tmp_path)
+
+
+def test_missing_score_component_raises(tmp_path, base_config):
+    config_dir = tmp_path / "config"
+    config_dir.mkdir()
+    assumptions = copy.deepcopy(base_config["assumptions"])
+    assumptions["score_weights"].pop("relationship_gap")
+    (config_dir / "assumptions.yml").write_text(yaml.safe_dump(assumptions))
+    (config_dir / "products.yml").write_text(yaml.safe_dump({"products": base_config["products"]}))
+
+    with pytest.raises(ConfigurationError, match="every scoring component"):
+        load_project_config(tmp_path)
+
+
 def test_bad_product_order_raises(tmp_path, base_config):
     config_dir = tmp_path / "config"
     config_dir.mkdir()
