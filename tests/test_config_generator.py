@@ -80,6 +80,43 @@ def test_non_positive_rm_task_cap_raises(tmp_path, base_config):
         load_project_config(tmp_path)
 
 
+@pytest.mark.parametrize(
+    ("key", "value"),
+    [
+        ("minimum_propensity", float("nan")),
+        ("minimum_propensity", True),
+        ("minimum_uplift", -0.01),
+        ("high_pd_block", 1.01),
+    ],
+)
+def test_invalid_probability_policy_raises(tmp_path, base_config, key, value):
+    config_dir = tmp_path / "config"
+    config_dir.mkdir()
+    assumptions = copy.deepcopy(base_config["assumptions"])
+    assumptions["decision_policy"][key] = value
+    (config_dir / "assumptions.yml").write_text(yaml.safe_dump(assumptions))
+    (config_dir / "products.yml").write_text(yaml.safe_dump({"products": base_config["products"]}))
+    with pytest.raises(ConfigurationError, match=key):
+        load_project_config(tmp_path)
+
+
+def test_policy_boolean_and_priority_order_are_strict(tmp_path, base_config):
+    for change, message in [
+        ({"aml_high_priority_block": "false"}, "must be a boolean"),
+        ({"minimum_priority_score": 90, "high_priority_score": 80}, "ascending order"),
+    ]:
+        config_dir = tmp_path / "config"
+        config_dir.mkdir(exist_ok=True)
+        assumptions = copy.deepcopy(base_config["assumptions"])
+        assumptions["decision_policy"].update(change)
+        (config_dir / "assumptions.yml").write_text(yaml.safe_dump(assumptions))
+        (config_dir / "products.yml").write_text(
+            yaml.safe_dump({"products": base_config["products"]})
+        )
+        with pytest.raises(ConfigurationError, match=message):
+            load_project_config(tmp_path)
+
+
 def test_generator_is_deterministic(small_config):
     first = build_demo_data(small_config, seed=77)
     second = build_demo_data(small_config, seed=77)

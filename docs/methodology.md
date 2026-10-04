@@ -98,3 +98,9 @@ One policy-qualified conversation per customer is retained. Conversations are ra
 RM portfolio and allocated only up to the lower of the configured monthly capacity and the
 `max_open_tasks_per_rm` policy ceiling. The authorised RM owns the
 final decision and may record contradictory evidence or decline to contact.
+# Decision-policy validation
+
+Probability thresholds must be finite numeric values from zero to one, priority
+scores must remain within zero to 100 and in ascending order, and the AML
+high-priority gate must be a real boolean. Invalid YAML values therefore fail
+before opportunity scoring or relationship-manager task allocation begins.
