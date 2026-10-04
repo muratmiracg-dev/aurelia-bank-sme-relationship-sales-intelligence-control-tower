@@ -41,6 +41,32 @@ def load_project_config(root: str | Path) -> dict[str, Any]:
         raise ConfigurationError("At least one relationship manager is required")
     if int(assumptions["decision_policy"]["max_open_tasks_per_rm"]) < 1:
         raise ConfigurationError("max_open_tasks_per_rm must be at least 1")
+    policy = assumptions["decision_policy"]
+    if not isinstance(policy.get("aml_high_priority_block"), bool):
+        raise ConfigurationError("aml_high_priority_block must be a boolean")
+    for key in ("minimum_propensity", "minimum_uplift", "high_pd_block"):
+        value = policy.get(key)
+        if (
+            isinstance(value, bool)
+            or not isinstance(value, (int, float))
+            or not math.isfinite(value)
+            or not 0 <= value <= 1
+        ):
+            raise ConfigurationError(f"{key} must be a finite number between 0 and 1")
+    priority = [policy.get("minimum_priority_score"), policy.get("high_priority_score")]
+    if (
+        any(
+            isinstance(value, bool)
+            or not isinstance(value, (int, float))
+            or not math.isfinite(value)
+            or not 0 <= value <= 100
+            for value in priority
+        )
+        or priority[0] > priority[1]
+    ):
+        raise ConfigurationError(
+            "Priority scores must be finite values from 0 to 100 in ascending order"
+        )
     return {"assumptions": assumptions, "products": products["products"]}
 
 
