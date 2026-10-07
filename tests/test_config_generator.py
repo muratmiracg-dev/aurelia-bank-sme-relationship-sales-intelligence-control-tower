@@ -81,6 +81,31 @@ def test_non_positive_rm_task_cap_raises(tmp_path, base_config):
 
 
 @pytest.mark.parametrize(
+    ("section", "key", "value"),
+    [
+        ("synthetic_population", "relationship_managers", True),
+        ("decision_policy", "max_open_tasks_per_rm", 2.5),
+        ("decision_policy", "task_sla_days", "10"),
+        ("decision_policy", "kyc_overdue_days_block", 0),
+        ("decision_policy", "arrears_days_block", -1),
+    ],
+)
+def test_operational_limits_require_positive_integers(
+    tmp_path, base_config, section, key, value
+):
+    config_dir = tmp_path / "config"
+    config_dir.mkdir()
+    assumptions = copy.deepcopy(base_config["assumptions"])
+    assumptions[section][key] = value
+    (config_dir / "assumptions.yml").write_text(yaml.safe_dump(assumptions))
+    (config_dir / "products.yml").write_text(
+        yaml.safe_dump({"products": base_config["products"]})
+    )
+    with pytest.raises(ConfigurationError, match="positive integer"):
+        load_project_config(tmp_path)
+
+
+@pytest.mark.parametrize(
     ("key", "value"),
     [
         ("minimum_propensity", float("nan")),
