@@ -37,11 +37,17 @@ def load_project_config(root: str | Path) -> dict[str, Any]:
         raise ConfigurationError("Opportunity score weights must be finite and non-negative")
     if abs(sum(numeric_weights) - 1.0) > 1e-9:
         raise ConfigurationError("Opportunity score weights must sum to 1.0")
-    if int(assumptions["synthetic_population"]["relationship_managers"]) < 1:
-        raise ConfigurationError("At least one relationship manager is required")
-    if int(assumptions["decision_policy"]["max_open_tasks_per_rm"]) < 1:
-        raise ConfigurationError("max_open_tasks_per_rm must be at least 1")
     policy = assumptions["decision_policy"]
+    integer_rules = {
+        "relationship_managers": assumptions["synthetic_population"].get("relationship_managers"),
+        "max_open_tasks_per_rm": policy.get("max_open_tasks_per_rm"),
+        "task_sla_days": policy.get("task_sla_days"),
+        "kyc_overdue_days_block": policy.get("kyc_overdue_days_block"),
+        "arrears_days_block": policy.get("arrears_days_block"),
+    }
+    for key, value in integer_rules.items():
+        if type(value) is not int or value < 1:
+            raise ConfigurationError(f"{key} must be a positive integer")
     if not isinstance(policy.get("aml_high_priority_block"), bool):
         raise ConfigurationError("aml_high_priority_block must be a boolean")
     for key in ("minimum_propensity", "minimum_uplift", "high_pd_block"):
