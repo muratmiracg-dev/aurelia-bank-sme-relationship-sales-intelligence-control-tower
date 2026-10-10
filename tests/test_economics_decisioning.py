@@ -6,7 +6,7 @@ import pytest
 
 from aurelia_sme_sales.constants import PRODUCTS
 from aurelia_sme_sales.decisioning import _suppression_reasons, build_opportunities
-from aurelia_sme_sales.economics import _notional
+from aurelia_sme_sales.economics import _notional, calculate_product_economics
 
 
 def test_economics_bridge_ties(decision_pack):
@@ -22,6 +22,24 @@ def test_economics_bridge_ties(decision_pack):
         calculated.round(2) == economics["risk_adjusted_profit_if_activated_try"].round(2)
     ).all()
     assert (economics["estimated_product_notional_try"] > 0).all()
+
+
+@pytest.mark.parametrize(
+    ("column", "value", "message"),
+    [
+        ("annual_turnover_try", float("nan"), "finite"),
+        ("pd_12m", 1.1, "probabilities"),
+        ("predicted_contact_uplift", float("inf"), "finite"),
+    ],
+)
+def test_product_economics_rejects_invalid_financial_inputs(
+    economics_decision_inputs, column, value, message
+):
+    economics, _, _, config = economics_decision_inputs
+    candidates = economics.copy()
+    candidates.loc[candidates.index[0], column] = value
+    with pytest.raises(ValueError, match=message):
+        calculate_product_economics(candidates, config)
 
 
 @pytest.mark.parametrize("product", PRODUCTS)
