@@ -16,10 +16,43 @@ def calculate_product_economics(
 ) -> pd.DataFrame:
     """Calculate transparent first-year economics for every product candidate."""
     frame = scored_candidates.copy()
+    required_numeric = [
+        "annual_turnover_try",
+        "pos_volume_6m_try",
+        "payroll_6m_try",
+        "outflow_6m_try",
+        "trade_flow_6m_try",
+        "average_deposit_balance_try",
+        "fx_inflow_6m_try",
+        "fx_outflow_6m_try",
+        "pd_12m",
+        "predicted_contact_uplift",
+    ]
+    missing = sorted(set(required_numeric + ["product_code"]) - set(frame.columns))
+    if missing:
+        raise ValueError(f"Missing product economics columns: {', '.join(missing)}")
+    numeric = frame[required_numeric].apply(pd.to_numeric, errors="coerce")
+    if numeric.isna().any().any() or not np.isfinite(numeric.to_numpy()).all():
+        raise ValueError("Product economics inputs must be finite numeric values")
+    if (
+        (numeric[[column for column in required_numeric if column.endswith("_try")]] < 0)
+        .any()
+        .any()
+    ):
+        raise ValueError("Product economics amounts must be non-negative")
+    if (
+        not numeric["pd_12m"].between(0, 1).all()
+        or not numeric["predicted_contact_uplift"].between(-1, 1).all()
+    ):
+        raise ValueError("PD and contact uplift must be valid probabilities")
+    frame[required_numeric] = numeric
     assumptions = config["assumptions"]
     economics = assumptions["economics"]
     frame["estimated_product_notional_try"] = [_notional(row) for row in frame.itertuples()]
     product_parameters = economics["product_parameters"]
+    unknown_products = sorted(set(frame["product_code"]) - set(product_parameters))
+    if unknown_products:
+        raise ValueError(f"Unknown product codes: {', '.join(unknown_products)}")
     gross_income = []
     funding_cost = []
     expected_loss = []
