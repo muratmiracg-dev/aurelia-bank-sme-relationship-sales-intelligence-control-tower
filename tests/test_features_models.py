@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import numpy as np
+import pytest
 
+from aurelia_sme_sales.features import build_customer_360
 from aurelia_sme_sales.propensity import fit_propensity_models, score_candidates
 
 
@@ -26,6 +28,19 @@ def test_candidates_exclude_existing_holdings(feature_pack, small_data):
     assert not held.intersection(proposed)
     assert candidates["candidate_id"].is_unique
     assert candidates["need_signal"].between(0, 1).all()
+
+
+@pytest.mark.parametrize("invalid_date", ["not-a-date", None, "2099-01-01"])
+def test_customer_360_rejects_invalid_or_future_interactions(
+    small_data, small_config, invalid_date
+):
+    invalid = {name: frame.copy() for name, frame in small_data.items()}
+    invalid["interactions"]["interaction_date"] = invalid["interactions"][
+        "interaction_date"
+    ].astype(object)
+    invalid["interactions"].loc[invalid["interactions"].index[0], "interaction_date"] = invalid_date
+    with pytest.raises(ValueError, match="Interaction dates"):
+        build_customer_360(invalid, small_config)
 
 
 def test_temporal_models_produce_valid_metrics(small_data):
