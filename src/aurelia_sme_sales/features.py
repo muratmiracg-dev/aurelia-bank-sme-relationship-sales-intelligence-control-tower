@@ -17,6 +17,14 @@ def build_customer_360(
     """Create one governed customer view and one eligible product-candidate view."""
     assumptions = config["assumptions"]
     as_of = pd.Timestamp(assumptions["as_of_date"])
+    interactions_source = data["interactions"].copy()
+    try:
+        interaction_dates = pd.to_datetime(interactions_source["interaction_date"], errors="raise")
+    except (TypeError, ValueError) as exc:
+        raise ValueError("Interaction dates must be valid ISO dates") from exc
+    if interaction_dates.isna().any() or interaction_dates.gt(as_of).any():
+        raise ValueError("Interaction dates must be present and not later than the as-of date")
+    interactions_source["interaction_date"] = interaction_dates
     flows = data["monthly_flows"].copy()
     latest_6 = flows.sort_values("month_end").groupby("customer_id", as_index=False).tail(6)
     aggregates = latest_6.groupby("customer_id", as_index=False).agg(
@@ -45,7 +53,7 @@ def build_customer_360(
         .reset_index()
     )
     interactions = (
-        data["interactions"]
+        interactions_source
         .groupby("customer_id", as_index=False)
         .agg(
             last_interaction_date=("interaction_date", "max"),

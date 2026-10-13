@@ -43,3 +43,5 @@
 | `automated_sale_flag` | Whether the system executes a sale | Always `false` by contract |
 
 Dates use ISO `YYYY-MM-DD`. TRY amounts are nominal synthetic values. Boolean fields are true/false.
+Interaction dates are mandatory, parseable and no later than the configured as-of date;
+future-dated CRM activity is rejected before recency features or customer priorities are built.
