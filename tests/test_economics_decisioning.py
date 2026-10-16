@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import copy
 
+import pandas as pd
 import pytest
 
 from aurelia_sme_sales.constants import PRODUCTS
@@ -84,6 +85,21 @@ def test_task_allocation_respects_policy_cap(economics_decision_inputs):
     assert next_best["effective_contact_capacity"].eq(1).all()
     assert allocated.groupby("rm_id").size().le(1).all()
     assert decisions["rm_performance"]["capacity_utilisation"].le(1).all()
+
+
+def test_decisioning_rejects_unknown_or_duplicate_relationship_managers(
+    economics_decision_inputs,
+):
+    economics, relationship_managers, products, config = economics_decision_inputs
+    unknown = economics.copy()
+    unknown.loc[unknown.index[0], "rm_id"] = "RM-UNKNOWN"
+    with pytest.raises(ValueError, match="known relationship manager"):
+        build_opportunities(unknown, relationship_managers, products, config)
+
+    duplicated = relationship_managers.copy()
+    duplicated = pd.concat([duplicated, duplicated.iloc[[0]]], ignore_index=True)
+    with pytest.raises(ValueError, match="populated and unique"):
+        build_opportunities(economics, duplicated, products, config)
 
 
 def test_sales_funnel_is_monotonic(decision_pack):
