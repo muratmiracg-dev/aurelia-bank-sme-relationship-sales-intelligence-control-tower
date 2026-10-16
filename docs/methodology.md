@@ -1,5 +1,8 @@
 # Methodology
 
+Opportunity allocation enforces relationship-manager referential integrity before ranking.
+Manager identifiers must be populated and unique, and every candidate must resolve to the
+manager master. Unknown assignments fail closed instead of disappearing during allocation.
 ## 1. Analytical population
 
 The cutoff is 20 August 2026. The portfolio contains 3,200 controlled-synthetic SME customers,

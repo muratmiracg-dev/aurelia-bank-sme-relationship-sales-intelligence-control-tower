@@ -17,6 +17,15 @@ def build_opportunities(
     config: dict[str, Any],
 ) -> dict[str, pd.DataFrame]:
     """Apply conduct gates, rank opportunities and allocate finite RM capacity."""
+    if (
+        relationship_managers["rm_id"].isna().any()
+        or relationship_managers["rm_id"].duplicated().any()
+    ):
+        raise ValueError("Relationship manager IDs must be populated and unique")
+    manager_ids = set(relationship_managers["rm_id"])
+    candidate_manager_ids = set(economics["rm_id"].dropna())
+    if economics["rm_id"].isna().any() or not candidate_manager_ids <= manager_ids:
+        raise ValueError("Every opportunity must reference a known relationship manager")
     assumptions = config["assumptions"]
     policy = assumptions["decision_policy"]
     weights = assumptions["score_weights"]
