@@ -52,10 +52,36 @@ def fit_propensity_models(
     seed: int,
 ) -> PropensityBundle:
     """Fit an interpretable champion, nonlinear challenger and T-learner uplift pair."""
+    required = {
+        *NUMERIC_FEATURES,
+        *CATEGORICAL_FEATURES,
+        "campaign_date",
+        "treatment_flag",
+        "activated_flag",
+    }
+    if campaign_history.empty or not required <= set(campaign_history.columns):
+        raise ValueError("Campaign history must contain all model fields and observations")
+    if campaign_history["campaign_date"].isna().any():
+        raise ValueError("Campaign dates must be complete")
+    for column in ("treatment_flag", "activated_flag"):
+        values = campaign_history[column]
+        if (
+            values.isna().any()
+            or not values.map(
+                lambda value: type(value) in (int, np.int64) and value in (0, 1)
+            ).all()
+        ):
+            raise ValueError(f"{column} must contain explicit binary integers")
     ordered = campaign_history.sort_values("campaign_date").reset_index(drop=True)
     split_index = int(len(ordered) * 0.80)
+    if split_index == 0 or split_index == len(ordered):
+        raise ValueError("Campaign history must provide non-empty train and validation periods")
     train = ordered.iloc[:split_index].copy()
     test = ordered.iloc[split_index:].copy()
+    if train["activated_flag"].nunique() < 2 or test["activated_flag"].nunique() < 2:
+        raise ValueError("Train and validation periods must contain both activation classes")
+    if set(train["treatment_flag"].unique()) != {0, 1}:
+        raise ValueError("Training data must contain treated and control observations")
     split_date = pd.Timestamp(test["campaign_date"].min())
     champion_features = NUMERIC_FEATURES + CATEGORICAL_FEATURES + ["treatment_flag"]
     champion = _logistic_pipeline(include_treatment=True, seed=seed)
