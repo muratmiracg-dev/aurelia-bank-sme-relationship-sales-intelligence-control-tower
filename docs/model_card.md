@@ -23,6 +23,8 @@ Protected characteristics are neither generated nor used.
 
 Campaigns are ordered by date. The earliest 80% are development observations; the latest 20% are
 an out-of-time-style synthetic validation set from 2 May through 5 August 2026.
+Both periods must contain both activation outcomes, and the development period must include treated
+and control observations. Treatment and outcome fields accept only explicit binary integers.
 
 ## Verified champion result
 
