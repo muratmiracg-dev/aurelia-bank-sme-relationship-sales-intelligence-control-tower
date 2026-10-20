@@ -53,6 +53,31 @@ def test_temporal_models_produce_valid_metrics(small_data):
     assert bundle.coefficients["absolute_coefficient"].is_monotonic_decreasing
 
 
+@pytest.mark.parametrize(
+    ("column", "value", "message"),
+    [
+        ("treatment_flag", True, "binary integers"),
+        ("activated_flag", "1", "binary integers"),
+        ("campaign_date", None, "dates"),
+    ],
+)
+def test_propensity_rejects_ambiguous_contract_values(small_data, column, value, message):
+    invalid = small_data["campaign_history"].copy()
+    invalid[column] = invalid[column].astype(object)
+    invalid.loc[invalid.index[0], column] = value
+    with pytest.raises(ValueError, match=message):
+        fit_propensity_models(invalid, seed=7)
+
+
+def test_propensity_requires_both_training_arms(small_data):
+    invalid = small_data["campaign_history"].copy()
+    ordered_index = invalid.sort_values("campaign_date").index
+    cutoff = int(len(invalid) * 0.8)
+    invalid.loc[ordered_index[:cutoff], "treatment_flag"] = 1
+    with pytest.raises(ValueError, match="treated and control"):
+        fit_propensity_models(invalid, seed=7)
+
+
 def test_scoring_outputs_probability_uplift_and_reasons(feature_pack, small_data):
     _, candidates = feature_pack
     bundle = fit_propensity_models(small_data["campaign_history"], seed=8)
