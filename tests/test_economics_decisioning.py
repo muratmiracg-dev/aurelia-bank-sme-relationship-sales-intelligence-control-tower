@@ -6,7 +6,7 @@ import pandas as pd
 import pytest
 
 from aurelia_sme_sales.constants import PRODUCTS
-from aurelia_sme_sales.decisioning import _suppression_reasons, build_opportunities
+from aurelia_sme_sales.decisioning import _sales_funnel, _suppression_reasons, build_opportunities
 from aurelia_sme_sales.economics import _notional, calculate_product_economics
 
 
@@ -107,6 +107,21 @@ def test_sales_funnel_is_monotonic(decision_pack):
     values = decisions["sales_funnel"].sort_values("stage_order")["expected_count"].to_list()
     assert values == sorted(values, reverse=True)
 
+
+
+def test_empty_sales_funnel_has_finite_conversion_rates():
+    empty = pd.DataFrame(
+        {
+            "capacity_allocated_flag": pd.Series(dtype=bool),
+            "propensity_probability": pd.Series(dtype=float),
+        }
+    )
+
+    funnel = _sales_funnel(empty)
+
+    assert funnel["expected_count"].tolist() == [0, 0, 0, 0, 0]
+    assert funnel["conversion_from_prior"].tolist() == [1.0, 0.0, 0.0, 0.0, 0.0]
+    assert funnel["conversion_from_prior"].notna().all()
 
 def test_suppression_reasons_cover_governance_gates(small_config):
     policy = small_config["assumptions"]["decision_policy"]
