@@ -191,7 +191,10 @@ def _sales_funnel(next_best: pd.DataFrame) -> pd.DataFrame:
     ]
     frame = pd.DataFrame(stages, columns=["funnel_stage", "expected_count"])
     frame["stage_order"] = np.arange(1, len(frame) + 1)
-    frame["conversion_from_prior"] = frame["expected_count"] / frame["expected_count"].shift(1)
+    previous_stage = frame["expected_count"].shift(1)
+    frame["conversion_from_prior"] = (
+        frame["expected_count"].div(previous_stage.where(previous_stage.gt(0))).fillna(0.0)
+    )
     frame.loc[0, "conversion_from_prior"] = 1.0
     frame["data_class"] = DERIVED_ANALYTICS
     return frame
