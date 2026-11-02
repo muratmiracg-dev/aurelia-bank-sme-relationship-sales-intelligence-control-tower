@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+- Rebuilt `MANIFEST.sha256`. Eleven entries (config, decisioning, economics, features,
+  propensity, three test modules and three docs) were stale, so `make verify` failed on `main`.
+- CI now runs `scripts/verify_artifacts.py`, and `make ci` includes `verify`, so a stale manifest
+  fails the pull request.
+- `scripts/build_manifest.py` hashes only git-tracked files, so local build output such as
+  `*.egg-info` cannot enter the manifest and break verification on a fresh checkout.
+
 ## 1.0.0 - 2026-08-21
 
 - Added deterministic SME Customer 360, relationship and product-holding data.

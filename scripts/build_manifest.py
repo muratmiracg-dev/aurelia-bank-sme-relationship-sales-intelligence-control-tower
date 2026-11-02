@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -27,8 +28,23 @@ def included(path: Path) -> bool:
     )
 
 
+def candidate_paths() -> list[Path]:
+    """Prefer git-tracked files so local build output (egg-info, caches) never enters the
+    manifest; a fresh CI checkout would otherwise report those entries as missing."""
+    try:
+        listed = subprocess.run(
+            ["git", "ls-files", "-z"],  # noqa: S607 - fixed command, no user input
+            cwd=ROOT,
+            capture_output=True,
+            check=True,
+        ).stdout.decode("utf-8")
+    except (OSError, subprocess.CalledProcessError):
+        return sorted(ROOT.rglob("*"))
+    return sorted(ROOT / name for name in listed.split("\0") if name)
+
+
 rows = []
-for path in sorted(ROOT.rglob("*")):
+for path in candidate_paths():
     if included(path):
         rows.append(
             f"{hashlib.sha256(path.read_bytes()).hexdigest()}  {path.relative_to(ROOT).as_posix()}"
