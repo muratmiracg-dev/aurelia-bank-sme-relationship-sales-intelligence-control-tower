@@ -26,6 +26,8 @@ jobs:
         run: ruff check .
       - name: Tests and coverage
         run: pytest --cov=aurelia_sme_sales --cov-report=term-missing --cov-branch
+      - name: Verify committed deliverables and manifest
+        run: python scripts/verify_artifacts.py
 
   reproducibility:
     runs-on: ubuntu-latest

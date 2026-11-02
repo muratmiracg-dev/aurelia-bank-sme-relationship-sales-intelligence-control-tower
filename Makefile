@@ -30,7 +30,7 @@ manifest:
 verify:
 	python scripts/verify_artifacts.py
 
-ci: lint coverage
+ci: lint coverage verify
 
 clean-generated:
 	python scripts/clean_generated.py
