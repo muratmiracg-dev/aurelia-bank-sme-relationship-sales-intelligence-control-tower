@@ -30,7 +30,7 @@ dev = [
   "ruff>=0.6,<1",
 ]
 deliverables = [
-  "reportlab>=4,<5",
+  "reportlab>=4,<6",
 ]
 
 [project.scripts]
