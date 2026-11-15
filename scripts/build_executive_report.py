@@ -342,7 +342,7 @@ def build_report() -> Path:
         [
             "Commercial value is material: TRY 16.7m expected incremental first-year profit across the selected queue.",
             "The transparent model clears discrimination, calibration and lift floors; the challenger remains available for monitoring.",
-            "RM capacity is not binding: average utilisation is 24.3%, maximum utilisation is 60.7%, and the waitlist is zero.",
+            f"RM capacity is not binding: average utilisation is {rms.capacity_utilisation.mean():.1%}, maximum utilisation is {rms.capacity_utilisation.max():.1%}, and the waitlist is {'zero' if summary['capacity_waitlist'] == 0 else format(summary['capacity_waitlist'], ',')}.",
             "The sole breach is KYC freshness. It changes execution and requires an accountable remediation path.",
         ],
         50,
