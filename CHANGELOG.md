@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+- Regenerated the committed results. They predated the RM task-policy cap (#8):
+  `rm_performance.csv`, `rm_worklist.csv`, `next_best_conversations.csv` and the SQLite layer
+  were missing `policy_max_open_tasks` and `effective_contact_capacity`. Sixteen RMs with a
+  monthly capacity above the 60-task cap showed uncapped utilisation, so average RM
+  utilisation is 25.1%, not 24.3%. Updated the executive report (it now computes the figure
+  instead of hard-coding it), the deck's utilisation slide and the workbook's RM Performance
+  utilisation column. The workbook does not show the two new columns.
+- CI's reproducibility job only checked that the regenerated digest had 64 characters, so
+  stale committed results passed. It now compares every regenerated CSV, JSON and SQLite table
+  with the committed values (`scripts/compare_outputs.py`).
+- CI test matrix adds Python 3.13.
 - Rebuilt `MANIFEST.sha256`. Eleven entries (config, decisioning, economics, features,
   propensity, three test modules and three docs) were stale, so `make verify` failed on `main`.
 - CI now runs `scripts/verify_artifacts.py`, and `make ci` includes `verify`, so a stale manifest

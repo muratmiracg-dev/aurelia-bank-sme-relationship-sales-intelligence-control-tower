@@ -219,6 +219,12 @@ make manifest
 make verify
 ```
 
+CI regenerates the demo and compares every committed CSV, JSON and SQLite table with the
+regenerated values (`scripts/compare_outputs.py`, relative tolerance 1e-9). `MANIFEST.sha256`
+proves the committed files are intact; this comparison proves the current code still produces
+them. To run it locally, copy `data/`, `artifacts/results/` and the SQLite file into a folder
+before `make demo`, then run `python scripts/compare_outputs.py <folder>`.
+
 The current canonical result digest is:
 
 ```text
