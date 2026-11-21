@@ -37,6 +37,8 @@ The deterministic pipeline uses seed `20260821` and a portfolio cutoff of **20 A
 | Weighted activation probability | **42.23%** |
 | Champion ROC AUC / PR AUC | **0.715 / 0.495** |
 | Champion Brier score / top-decile lift | **0.182 / 2.07x** |
+| Uplift ranking Qini area / permutation p-value | **0.0035 / 0.096** |
+| Observed vs mean predicted contact uplift (hold-out) | **7.14% / 4.96%** |
 | Data-quality controls | **14 / 14 passed** |
 | Management controls | **9 passed / 1 breach** |
 
@@ -46,7 +48,11 @@ without bypassing sales suppressions or consuming uncontrolled RM capacity.
 
 The TRY 16.74m value is a synthetic, assumption-driven estimate:
 `positive contact uplift × first-year risk-adjusted profit - contact cost`. It is not a budget,
-accounting forecast or promised commercial outcome.
+accounting forecast or promised commercial outcome. It also rests on an uplift signal that
+validates only weakly: on the randomized hold-out period the uplift ranking beats random
+targeting (Qini area 0.0035), but 9.6% of random orderings do as well (permutation p = 0.096),
+and the mean predicted uplift (4.96%) understates the observed contact effect (7.14%) by about
+30%. Treat the ranking as a hypothesis for a controlled experiment, not a proven targeting rule.
 
 ## Business problem
 
@@ -72,7 +78,8 @@ This project answers five connected questions:
 - **Temporal propensity validation:** interpretable logistic champion and histogram-gradient
   challenger with ROC AUC, PR AUC, Brier, log loss and top-decile lift.
 - **Treatment/control uplift:** T-learner contact and no-contact models, ranked deciles and
-  observed incremental-rate diagnostics.
+  observed incremental-rate diagnostics, a Qini permutation test of the ranking and a
+  calibration check of mean predicted uplift against the randomized hold-out effect.
 - **Explainable decisioning:** need, relationship, risk and engagement reason codes; model
   explanations are associative rather than causal.
 - **Risk-adjusted economics:** gross income, FTP-style funding cost, `PD × LGD × EAD`, allocated

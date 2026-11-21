@@ -43,6 +43,7 @@ class PropensityBundle:
     control_model: Pipeline
     performance: pd.DataFrame
     uplift_deciles: pd.DataFrame
+    uplift_validation: pd.DataFrame
     coefficients: pd.DataFrame
     split_date: pd.Timestamp
 
@@ -110,7 +111,16 @@ def fit_propensity_models(
     control_model.fit(control_train[uplift_features], control_train["activated_flag"])
     treated_probability = treated_model.predict_proba(test[uplift_features])[:, 1]
     control_probability = control_model.predict_proba(test[uplift_features])[:, 1]
-    uplift_deciles = _uplift_validation(test, treated_probability - control_probability)
+    predicted_uplift = treated_probability - control_probability
+    uplift_deciles = _uplift_validation(test, predicted_uplift)
+    uplift_validation = uplift_ranking_test(
+        predicted_uplift,
+        test["treatment_flag"].to_numpy(),
+        test["activated_flag"].to_numpy(),
+        seed=seed,
+    )
+    uplift_validation["validation_start"] = split_date
+    uplift_validation["validation_end"] = pd.Timestamp(test["campaign_date"].max())
     coefficients = _coefficient_frame(champion)
     return PropensityBundle(
         champion=champion,
@@ -118,6 +128,7 @@ def fit_propensity_models(
         control_model=control_model,
         performance=performance,
         uplift_deciles=uplift_deciles,
+        uplift_validation=uplift_validation,
         coefficients=coefficients,
         split_date=split_date,
     )
@@ -231,6 +242,86 @@ def _uplift_validation(test: pd.DataFrame, predicted_uplift: np.ndarray) -> pd.D
             }
         )
     return pd.DataFrame(rows)
+
+
+def qini_area(predicted_uplift: np.ndarray, treatment: np.ndarray, outcome: np.ndarray) -> float:
+    """Area between the Qini curve and the random-targeting line, per observation.
+
+    Observations are ranked by predicted uplift (ties keep their input order). At each cut-off k
+    the Qini curve counts incremental responders ``Y_T(k) - Y_C(k) * N_T(k) / N_C(k)``; random
+    targeting reaches ``k / N`` of the full-population value. The mean gap is divided by N, so a
+    positive value means the ranking finds more incremental responders than random contact.
+    """
+    order = np.argsort(-np.asarray(predicted_uplift, dtype=float), kind="mergesort")
+    treated = np.asarray(treatment, dtype=float)[order]
+    response = np.asarray(outcome, dtype=float)[order]
+    treated_count = np.cumsum(treated)
+    control_count = np.cumsum(1 - treated)
+    treated_response = np.cumsum(response * treated)
+    control_response = np.cumsum(response * (1 - treated))
+    scaled_control = np.divide(
+        control_response * treated_count,
+        control_count,
+        out=np.zeros_like(control_response),
+        where=control_count > 0,
+    )
+    curve = treated_response - scaled_control
+    size = len(curve)
+    random_line = curve[-1] * np.arange(1, size + 1) / size
+    return float(np.mean(curve - random_line) / size)
+
+
+def uplift_ranking_test(
+    predicted_uplift: np.ndarray,
+    treatment: np.ndarray,
+    outcome: np.ndarray,
+    seed: int,
+    permutations: int = 999,
+) -> pd.DataFrame:
+    """Test the uplift ranking and calibration on randomized hold-out treatment data.
+
+    The p-value is the share of ``permutations`` random re-orderings of the same predictions
+    whose Qini area is at least the model's (with the usual +1 correction). Because treatment
+    was randomized, the treated-minus-control activation rate is an unbiased estimate of the
+    average contact effect, against which the mean predicted uplift is compared.
+    """
+    predicted = np.asarray(predicted_uplift, dtype=float)
+    treated = np.asarray(treatment)
+    response = np.asarray(outcome)
+    if not (len(predicted) == len(treated) == len(response)) or len(predicted) < 2:
+        raise ValueError("Uplift test inputs must be aligned and contain observations")
+    if not np.isfinite(predicted).all():
+        raise ValueError("Predicted uplift must be finite")
+    if set(np.unique(treated)) != {0, 1} or not set(np.unique(response)) <= {0, 1}:
+        raise ValueError("Uplift test needs binary outcomes and both treated and control rows")
+    if isinstance(permutations, bool) or not isinstance(permutations, int) or permutations < 1:
+        raise ValueError("Permutations must be a positive integer")
+    observed = qini_area(predicted, treated, response)
+    rng = np.random.default_rng(seed)
+    exceed = sum(
+        qini_area(rng.permutation(predicted), treated, response) >= observed
+        for _ in range(permutations)
+    )
+    observed_effect = float(response[treated == 1].mean() - response[treated == 0].mean())
+    mean_predicted = float(predicted.mean())
+    return pd.DataFrame(
+        [
+            {
+                "observations": len(predicted),
+                "treated_observations": int((treated == 1).sum()),
+                "control_observations": int((treated == 0).sum()),
+                "qini_area": observed,
+                "permutations": permutations,
+                "qini_permutation_p_value": (exceed + 1) / (permutations + 1),
+                "observed_average_uplift": observed_effect,
+                "mean_predicted_uplift": mean_predicted,
+                "uplift_calibration_ratio": (
+                    mean_predicted / observed_effect if observed_effect else float("nan")
+                ),
+                "data_class": DERIVED_ANALYTICS,
+            }
+        ]
+    )
 
 
 def _coefficient_frame(model: Pipeline) -> pd.DataFrame:
