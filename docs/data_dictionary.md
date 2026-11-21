@@ -26,6 +26,7 @@
 | `sales_funnel` | Expected stage | capacity-constrained funnel counts |
 | `model_performance` | Candidate model | temporal discrimination and calibration metrics |
 | `uplift_deciles` | Uplift decile | treatment/control response and incremental rate |
+| `uplift_validation` | Hold-out period | Qini area, permutation p-value, observed vs mean predicted uplift |
 | `conduct_monitoring` | Operational segment | selection rate and expected economics |
 | `management_controls` | Control | actual, threshold, status, owner and action |
 

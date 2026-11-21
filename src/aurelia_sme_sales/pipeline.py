@@ -71,6 +71,7 @@ def run_pipeline(root: str | Path, seed: int = 20260821) -> dict[str, Any]:
         ],
         "model_performance": bundle.performance,
         "uplift_deciles": bundle.uplift_deciles,
+        "uplift_validation": bundle.uplift_validation,
         "model_coefficients": bundle.coefficients,
         **decisions,
         "conduct_monitoring": conduct,
@@ -93,6 +94,7 @@ def run_pipeline(root: str | Path, seed: int = 20260821) -> dict[str, Any]:
             "sales_funnel": decisions["sales_funnel"],
             "model_performance": bundle.performance,
             "uplift_deciles": bundle.uplift_deciles,
+            "uplift_validation": bundle.uplift_validation,
             "conduct_monitoring": conduct,
             "data_quality_controls": dq_controls,
             "management_controls": management,
@@ -139,6 +141,7 @@ def _executive_summary(
         results["model_performance"].loc[results["model_performance"]["selected_champion"]].iloc[0]
     )
     controls = results["management_controls"]
+    uplift = results["uplift_validation"].iloc[0]
     product_mix = (
         selected.groupby("product_label")
         .agg(
@@ -185,6 +188,10 @@ def _executive_summary(
         "champion_pr_auc": round(float(champion["pr_auc"]), 6),
         "champion_brier_score": round(float(champion["brier_score"]), 6),
         "champion_top_decile_lift": round(float(champion["top_decile_lift"]), 6),
+        "uplift_qini_area": round(float(uplift["qini_area"]), 6),
+        "uplift_qini_permutation_p_value": round(float(uplift["qini_permutation_p_value"]), 6),
+        "uplift_observed_average_effect": round(float(uplift["observed_average_uplift"]), 6),
+        "uplift_mean_predicted_effect": round(float(uplift["mean_predicted_uplift"]), 6),
         "data_quality_passed": int((results["data_quality_controls"]["status"] == "PASS").sum()),
         "data_quality_total": len(results["data_quality_controls"]),
         "management_control_breaches": int((controls["status"] == "BREACH").sum()),

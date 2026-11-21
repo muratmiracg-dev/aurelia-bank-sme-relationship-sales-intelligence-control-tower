@@ -24,9 +24,22 @@ and materially easier to explain and govern.
 
 ## Uplift validation
 
-The top uplift deciles are reviewed against randomized synthetic treatment/control activation
-rates. The output is diagnostic: it does not certify causal identification, policy invariance or
-production transportability.
+The T-learner's predicted uplift is checked on the randomized hold-out period
+(2026-05-02 to 2026-08-05, 3,200 campaigns: 1,779 treated, 1,421 control), in
+`artifacts/results/uplift_validation.csv`:
+
+| Check | Result | Reading |
+|---|---:|---|
+| Qini area (curve minus random line, per observation) | 0.0035 | ranking finds more incremental activations than random contact |
+| Permutation p-value (999 re-orderings, seed 20260821) | 0.096 | not significant at 5%; 9.6% of random orderings match it |
+| Observed average uplift (treated minus control rate) | 7.14% | unbiased, because treatment was randomized |
+| Mean predicted uplift | 4.96% | understates the observed effect; calibration ratio 0.69 |
+
+The decile table (`uplift_deciles.csv`) shows the same picture: the top decile's observed
+incremental rate (6.3%) is below deciles 2-6. The uplift ranking is therefore weak evidence, and
+the expected-incremental-profit figure inherits both the ranking noise and the ~30% under-
+prediction. The output is diagnostic: it does not certify causal identification, policy
+invariance or production transportability.
 
 ## Decision controls
 

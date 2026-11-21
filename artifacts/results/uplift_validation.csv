@@ -1,0 +1,2 @@
+observations,treated_observations,control_observations,qini_area,permutations,qini_permutation_p_value,observed_average_uplift,mean_predicted_uplift,uplift_calibration_ratio,data_class,validation_start,validation_end
+3200,1779,1421,0.003456,999,0.096000,0.071422,0.049626,0.694825,DERIVED_ANALYTICS,2026-05-02,2026-08-05

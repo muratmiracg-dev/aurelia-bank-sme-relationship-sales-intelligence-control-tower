@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Added a statistical check of the contact-uplift ranking. The validation report only said the
+  top deciles were "reviewed"; no number tested whether the T-learner ranks incremental
+  response better than random. `uplift_validation.csv` (also in SQLite and the executive
+  summary) now reports the Qini area, a 999-permutation p-value and the randomized hold-out
+  effect against the mean prediction. Result: Qini area 0.0035, p = 0.096 (not significant at
+  5%), observed uplift 7.14% vs predicted 4.96%. README and validation report state the
+  consequence for the expected-incremental-profit figure. Decisions are unchanged.
 - Regenerated the committed results. They predated the RM task-policy cap (#8):
   `rm_performance.csv`, `rm_worklist.csv`, `next_best_conversations.csv` and the SQLite layer
   were missing `policy_max_open_tasks` and `effective_contact_capacity`. Sixteen RMs with a
