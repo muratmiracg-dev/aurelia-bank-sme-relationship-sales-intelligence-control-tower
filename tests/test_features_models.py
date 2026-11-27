@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import numpy as np
+import pandas as pd
 import pytest
 
 from aurelia_sme_sales.features import build_customer_360
@@ -41,6 +42,21 @@ def test_customer_360_rejects_invalid_or_future_interactions(
     invalid["interactions"].loc[invalid["interactions"].index[0], "interaction_date"] = invalid_date
     with pytest.raises(ValueError, match="Interaction dates"):
         build_customer_360(invalid, small_config)
+
+
+def test_interactions_12m_counts_only_the_trailing_twelve_months(small_data, small_config):
+    baseline, _ = build_customer_360(small_data, small_config)
+    as_of = pd.Timestamp(small_config["assumptions"]["as_of_date"])
+    customer = baseline["customer_id"].iloc[0]
+    older = small_data["interactions"].head(3).copy()
+    older["customer_id"] = customer
+    older["interaction_id"] = [f"OLD{i}" for i in range(3)]
+    older["interaction_date"] = [as_of - pd.DateOffset(months=m) for m in (13, 18, 24)]
+    data = {name: frame.copy() for name, frame in small_data.items()}
+    data["interactions"] = pd.concat([data["interactions"], older], ignore_index=True)
+    with_history, _ = build_customer_360(data, small_config)
+    count = with_history.set_index("customer_id")["interactions_12m"]
+    assert count[customer] == baseline.set_index("customer_id")["interactions_12m"][customer]
 
 
 def test_temporal_models_produce_valid_metrics(small_data):

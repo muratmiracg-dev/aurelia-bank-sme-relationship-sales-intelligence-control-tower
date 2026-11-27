@@ -132,7 +132,7 @@ See the full [product catalog](docs/product_catalog.md) and
 ├── config/                   # Governed product, score, policy and economics assumptions
 ├── data/                     # Controlled synthetic demo data and official source register
 ├── artifacts/                # Reproducible results, SQLite database and analytical figures
-├── tests/                    # 39 unit and integration tests; 90% enforced coverage gate
+├── tests/                    # 81 unit and integration tests; 90% enforced coverage gate
 ├── sql/                      # PostgreSQL schema, views and management queries
 ├── powerbi/                  # DAX library, theme and seven-page dashboard specification
 ├── excel/                    # Formula-driven RM and profitability workbench
