@@ -52,8 +52,13 @@ def build_customer_360(
         .rename("products_held_list")
         .reset_index()
     )
+    # interactions_12m feeds relationship depth and the propensity features, so it must count
+    # the trailing twelve months only. Counting every row inflated it for any source with more
+    # history than the demo extract (which happens to hold exactly twelve months).
+    window_start = as_of - pd.DateOffset(months=12)
     interactions = (
         interactions_source
+        .loc[interactions_source["interaction_date"].gt(window_start)]
         .groupby("customer_id", as_index=False)
         .agg(
             last_interaction_date=("interaction_date", "max"),
